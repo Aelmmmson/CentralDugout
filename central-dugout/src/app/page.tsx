@@ -1,17 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
 "use client"; // Required for Framer Motion and interactivity
-
 import { motion, useAnimation } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import Contactusform from "./components/Contactus";
 import {
-  FaChevronLeft,
-  FaChevronRight,
+  // FaChevronLeft,
+  // FaChevronRight,
   FaStar,
   FaQuoteLeft,
   FaQuoteRight,
+  // FaHome,
+  // FaInfoCircle,
+  // FaEnvelope,
+  // FaQuestionCircle,
 } from "react-icons/fa"; // Icons for navigation and testimonials
 import Image from "next/image"; // Import the Image component from next/image
+import { Home2, InfoCircle, MessageQuestion, MedalStar, Discover } from 'iconsax-react';
 
 const features = [
   {
@@ -94,11 +99,11 @@ export default function Home() {
     setActiveIndex((prev) => (prev + 1) % sliderItems.length);
   };
 
-  const handlePrev = () => {
-    setActiveIndex(
-      (prev) => (prev - 1 + sliderItems.length) % sliderItems.length
-    );
-  };
+  // const handlePrev = () => {
+  //   setActiveIndex(
+  //     (prev) => (prev - 1 + sliderItems.length) % sliderItems.length
+  //   );
+  // };
 
   // Automatic slider functionality
   useEffect(() => {
@@ -115,88 +120,93 @@ export default function Home() {
 
   // Navbar scroll effect
   const [navbarBackground, setNavbarBackground] = useState(false);
+const [activeSection, setActiveSection] = useState('');
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setNavbarBackground(true);
-      } else {
-        setNavbarBackground(false);
+useEffect(() => {
+  const handleScroll = () => {
+    if (window.scrollY > 50) {
+      setNavbarBackground(true);
+    } else {
+      setNavbarBackground(false);
+    }
+
+    const sections = ['home', 'about', 'features', 'testimonials', 'faqs'];
+    let currentSection = 'home';
+
+    sections.forEach((section) => {
+      const element = document.getElementById(section);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top <= 100 && rect.bottom >= 100) {
+          currentSection = section;
+        }
       }
-    };
+    });
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    setActiveSection(currentSection);
+  };
+
+  window.addEventListener('scroll', handleScroll);
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+    
 
   return (
     <div className="bg-gray-50">
       {/* Navbar */}
-      <nav
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
-          navbarBackground ? "bg-white shadow-lg py-1" : "bg-transparent py-6"
-        }`}
-      >
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="flex items-center">
-            <img
-              src={navbarBackground ? "/logo5.png" : "/logo4.png"} // Dynamic logo
-              alt="Logo"
-              // width={32}
-              // height={32}
-              className="mr-2"
-              style={{ height: "50px", width: "140px" }}
-            />
-            {/* <span className="text-xl font-bold text-primary">Central Dugout</span> */}
-          </div>
-          <div className="flex items-center space-x-8 font-bold">
-          <a
-              href="#about"
-              className={`${
-                navbarBackground ? "text-gray-800" : "text-white"
-              } hover:text-primary`}
-            >
-              About
-            </a>
-            <a
-              href="#features"
-              className={`${
-                navbarBackground ? "text-gray-800" : "text-white"
-              } hover:text-primary`}
-            >
-              Features
-            </a>
-            
-            <a
-              href="#contact"
-              className={`${
-                navbarBackground ? "text-gray-800" : "text-white"
-              } hover:text-primary`}
-            >
-              Contact Us
-            </a>
-            <a
-              href="#faqs"
-              className={`${
-                navbarBackground ? "text-gray-800" : "text-white"
-              } hover:text-primary`}
-            >
-              FAQs
-            </a>
-          </div>
-          <div className="flex items-center space-x-4">
-            <button className="bg-primary text-white px-4 py-2 rounded-full hover:bg-primary-dark transition">
-              Login
-            </button>
-            <button className="bg-secondary text-white px-4 py-2 rounded-full hover:bg-secondary-dark transition">
-              Sign Up
-            </button>
-          </div>
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        navbarBackground ? 'bg-blue-900 shadow-lg py-1' : 'bg-transparent py-6'
+      }`}
+    >
+      <div className="container mx-auto px-6 flex justify-between items-center">
+        <div className="flex items-center">
+          <img
+            src={navbarBackground ? '/logo3.png' : '/logo3.png'}
+            alt="Logo"
+            className="mr-2"
+            style={{ height: '50px', width: '140px' }}
+          />
         </div>
-      </nav>
+        <div className="flex-1 flex justify-center ml-32 space-x-8 font-bold">
+          {[
+            { href: '#home', icon: <Home2 size="24" variant="Bold" color=" #a7f2ff "/>, section: 'home' },
+            { href: '#about', icon: <Discover size="24" variant="Bold" color=" #a7f2ff "/>, section: 'about' },
+            { href: '#features', icon: <InfoCircle size="24" variant="Bold" color=" #a7f2ff "/>, section: 'features' },
+            { href: '#testimonials', icon: <MedalStar size="24" variant="Bold" color=" #a7f2ff "/>, section: 'testimonials' },
+            { href: '#faqs', icon: <MessageQuestion size="24" variant="Bold" color=" #a7f2ff "/>, section: 'faqs' },
+          ].map(({ href, icon, section }) => (
+            <a
+              key={href}
+              href={href}
+              className={`relative ${
+                navbarBackground ? 'text-gray-800' : 'text-white'
+              } hover:text-primary transition ${
+                activeSection === section ? 'text-primary' : ''
+              }`}
+            >
+              {icon}
+              {activeSection === section && (
+                <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 w-6 bg-white rounded-full"></span>
+              )}
+            </a>
+          ))}
+        </div>
+        <div className="flex items-center space-x-2">
+          <button className="bg-primary text-white px-3 py-1.5 text-sm rounded-full hover:bg-primary-dark transition">
+            Login
+          </button>
+          <button className="bg-secondary text-white px-3 py-1.5 text-sm rounded-full hover:bg-secondary-dark transition">
+            Sign Up
+          </button>
+          <Contactusform />
+        </div>
+      </div>
+    </nav>
+
 
       {/* Hero Section */}
-      <section className="h-screen flex items-center justify-center bg-gradient-to-r from-primary to-secondary overflow-hidden relative p-8">
+      <section id="home" className="h-screen flex items-center justify-center bg-gradient-to-r from-primary to-secondary overflow-hidden relative p-8">
         {/* Background Icon */}
         <motion.div
           className="absolute -left-80 -top-56 h-full opacity-10"
@@ -209,54 +219,75 @@ export default function Home() {
 
         {/* Left Section: Header and Slider Titles */}
         <div className="flex flex-col items-start space-y-20 w-[30%] relative mr-8">
-          {/* Previous Title */}
-          <motion.div
-            className="cursor-pointer text-right"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 0.5 }}
-            transition={{ duration: 0.5 }}
-            onClick={() => setActiveIndex(prevIndex)}
-          >
-            <div className="text-sm font-bold text-gray-200 uppercase">
-              {sliderItems[prevIndex].header} {/* Previous header */}
-            </div>
-            <div className="text-2xl font-bold text-gray-200">
-              {sliderItems[prevIndex].title} {/* Previous title */}
-            </div>
-          </motion.div>
+  {/* Previous Title */}
+  <motion.div
+    className="cursor-pointer text-right"
+    initial={{ x: -20, opacity: 0 }}
+    animate={{ x: 0, opacity: 0.5 }}
+    transition={{ duration: 0.5 }}
+    onClick={() => setActiveIndex(prevIndex)}
+  >
+    <div className="text-sm font-bold text-gray-200 uppercase">
+      {sliderItems[prevIndex].header}
+    </div>
+    <div className="text-2xl font-bold text-gray-200">
+      {sliderItems[prevIndex].title}
+    </div>
+  </motion.div>
 
-          {/* Active Title */}
-          <motion.div
-            className="cursor-pointer text-right"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.5 }}
-            onClick={() => setActiveIndex(activeIndex)}
-          >
-            <div className="text-sm font-bold text-white uppercase">
-              {sliderItems[activeIndex].header} {/* Active header */}
-            </div>
-            <div className="text-5xl font-bold text-white">
-              {sliderItems[activeIndex].title} {/* Active title */}
-            </div>
-          </motion.div>
+  {/* Arrow 1 between Previous and Active Title */}
+  <motion.div
+    className="absolute -top-[10%] left-3/4 transform -translate-x-1/2"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    <img src="/arrow2.png" alt="Arrow 1" className="w-16 h-16" />
+  </motion.div>
 
-          {/* Next Title */}
-          <motion.div
-            className="cursor-pointer text-right"
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 0.5 }}
-            transition={{ duration: 0.5 }}
-            onClick={() => setActiveIndex(nextIndex)}
-          >
-            <div className="text-sm font-bold text-gray-200 uppercase">
-              {sliderItems[nextIndex].header} {/* Next header */}
-            </div>
-            <div className="text-2xl font-bold text-gray-200">
-              {sliderItems[nextIndex].title} {/* Next title */}
-            </div>
-          </motion.div>
-        </div>
+  {/* Active Title */}
+  <motion.div
+    className="cursor-pointer text-right relative"
+    initial={{ scale: 0 }}
+    animate={{ scale: 1 }}
+    transition={{ duration: 0.5 }}
+    onClick={() => setActiveIndex(activeIndex)}
+  >
+    <div className="text-sm font-bold text-white uppercase">
+      {sliderItems[activeIndex].header}
+    </div>
+    <div className="text-5xl font-bold text-white">
+      {sliderItems[activeIndex].title}
+    </div>
+  </motion.div>
+
+  {/* Arrow 2 between Active and Next Title */}
+  <motion.div
+    className="absolute top-[50%] left-3/4 transform -translate-x-1/2"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+  >
+    <img src="/arrow1.png" alt="Arrow 2" className="w-16 h-12" />
+  </motion.div>
+
+  {/* Next Title */}
+  <motion.div
+    className="cursor-pointer text-right"
+    initial={{ x: -20, opacity: 0 }}
+    animate={{ x: 0, opacity: 0.5 }}
+    transition={{ duration: 0.5 }}
+    onClick={() => setActiveIndex(nextIndex)}
+  >
+    <div className="text-sm font-bold text-gray-200 uppercase">
+      {sliderItems[nextIndex].header}
+    </div>
+    <div className="text-2xl font-bold text-gray-200">
+      {sliderItems[nextIndex].title}
+    </div>
+  </motion.div>
+</div>
+
 
         {/* Middle Section: Image Container */}
         <motion.div
@@ -274,22 +305,6 @@ export default function Home() {
             height={256}
             className="w-full h-full object-cover rounded-lg shadow-[10px_10px_20px_rgba(0,0,0,0.3)]"
           />
-
-          {/* Navigation Buttons */}
-          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 flex space-x-4">
-            <button
-              className="text-white p-2 rounded-full hover:bg-gray-100 hover:text-primary transition"
-              onClick={handlePrev}
-            >
-              <FaChevronLeft size={20} />
-            </button>
-            <button
-              className="text-white p-2 rounded-full hover:bg-gray-100 hover:text-primary transition"
-              onClick={handleNext}
-            >
-              <FaChevronRight size={20} />
-            </button>
-          </div>
         </motion.div>
 
         {/* Right Section: Header Text and Paragraph */}
@@ -312,7 +327,6 @@ export default function Home() {
         </motion.div>
       </section>
 
-
       {/* About Section */}
       <section id="about" className="py-20 bg-gray-50">
         <div className="container mx-auto px-6">
@@ -327,6 +341,7 @@ export default function Home() {
           </p>
         </div>
       </section>
+
       {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="container mx-auto px-6">
@@ -356,7 +371,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-white">
+      <section id="testimonials" className="py-20 bg-white">
         <div className="container mx-auto px-6">
           <h2 className="text-4xl font-bold text-center text-gray-800 mb-12">
             What Our Users Say
